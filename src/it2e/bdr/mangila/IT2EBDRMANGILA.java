@@ -8,9 +8,9 @@ public class IT2EBDRMANGILA {
     Scanner sc = new Scanner(System.in);
     boolean exit = true; 
     do{
-        System.out.println("\n----------------------------------------------");
+        System.out.println("\n-----------------------------------------");
         System.out.println("WELCOME TO BARANGAY DOCUMENTS REQUEST APP");
-        System.out.println("----------------------------------------------");
+        System.out.println("-----------------------------------------");
         System.out.println("1. Citizen");
         System.out.println("2. Documents");
         System.out.println("3. DocumentsRequested");

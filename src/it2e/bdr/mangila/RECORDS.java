@@ -19,9 +19,9 @@ public class RECORDS {
         String response;
 
         do {
-            System.out.println("\n----------------------------------------------");
+            System.out.println("\n------------------------");
             System.out.println("Welcome to Records Panel");
-            System.out.println("----------------------------------------------");
+            System.out.println("------------------------");
             System.out.println("1. Generate Specific Report");
             System.out.println("2. Generate General Report");
             System.out.println("3. Exit");
@@ -77,10 +77,10 @@ public class RECORDS {
 
         try (ResultSet result = findRow.executeQuery()) {
             // Print the header
-            System.out.println("\n----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("| %-15s | %-30s | %-25s | %-15s | %-10s | %-10s | %-10s |\n",
-                              "Customer ID", "Name", "Document Type", "Request Date", "Status", "Total Due", "Cash");
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("\n---------------------------------------------------------------------------------------------------------------");
+            System.out.printf("| %-15s | %-30s | %-25s | %-15s | %-10s |\n",
+                              "Customer ID", "Name", "Document Type", "Request Date", "Status");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
 
             // Variables to hold totals
             double totalDueSum = 0;
@@ -102,15 +102,15 @@ public class RECORDS {
                 totalDueSum += totalDue;
                 cashReceivedSum += cashReceived;
 
-                System.out.printf("| %-15d | %-30s | %-25s | %-15s | %-10s | %-10.2f | %-10.2f |\n",
-                                  customerID, customerName, documentType, requestDate, status, totalDue, cashReceived);
+                System.out.printf("| %-15d | %-30s | %-25s | %-15s | %-10s |\n",
+                                  customerID, customerName, documentType, requestDate, status);
             }
 
             if (!hasRecords) {
                 System.out.println("| No records found for the given Customer ID.");
             }
 
-            System.out.println("\n----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("\n------------------");
 
             // Print the total due, cash, and change
             if (hasRecords) {
@@ -120,7 +120,7 @@ public class RECORDS {
                 System.out.println("Change: " + change);
             }
 
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("-------------------");
         }
     } catch (SQLException e) {
         System.out.println("Error: " + e.getMessage());
