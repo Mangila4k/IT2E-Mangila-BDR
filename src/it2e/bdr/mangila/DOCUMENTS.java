@@ -86,7 +86,7 @@ public class DOCUMENTS {
                 break;
             default:
                 dtype = "";
-    };
+    }
 
     double dprice = 0;
     while (true) {
@@ -174,7 +174,7 @@ public void updateDocument() {
                 break;
             default:
                 dtype = "";
-    };
+    }
 
     double dprice = 0;
     while (true) {

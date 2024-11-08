@@ -224,7 +224,7 @@ public void updateRequestedDocument() {
                     default:
                         System.out.println("Invalid status selection.");
                         return;
-            };
+            }
 
             if (newStatus != null) {
                 String updateStatusQuery = "UPDATE DocumentRequested SET dr_status = ? WHERE dr_id = ?";
