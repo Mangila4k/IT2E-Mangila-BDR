@@ -77,7 +77,7 @@ public class RECORDS {
 
         try (ResultSet result = findRow.executeQuery()) {
             // Print the header
-            System.out.println("\n---------------------------------------------------------------------------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
             System.out.printf("| %-15s | %-30s | %-25s | %-15s | %-10s |\n",
                               "Customer ID", "Name", "Document Type", "Request Date", "Status");
             System.out.println("---------------------------------------------------------------------------------------------------------------");
@@ -109,6 +109,7 @@ public class RECORDS {
             if (!hasRecords) {
                 System.out.println("| No records found for the given Customer ID.");
             }
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
 
             System.out.println("\n------------------");
 
