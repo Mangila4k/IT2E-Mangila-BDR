@@ -14,7 +14,7 @@ public static Connection connectDB() {
         Connection con = null;
         try {
             Class.forName("org.sqlite.JDBC"); // Load the SQLite JDBC driver
-            con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Macky Server\\Desktop\\javafiles\\barangayrequestdocument.db"); // Establish connection
+            con = DriverManager.getConnection("jdbc:sqlite:BarangayRequestDocuments.db"); // Establish connection
             System.out.println("Connection Successful");
         } catch (Exception e) {
             System.out.println("Connection Failed: " + e);
@@ -98,8 +98,8 @@ public static Connection connectDB() {
                 recordCount++; // Increment record counter
             }   
             System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
             System.out.println(recordCount + " record(s) retrieved."); // Display the number of records retrieved
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         }
 
     } catch (SQLException e) {

@@ -62,10 +62,10 @@ public class RECORDS {
         cid = sc.nextInt();
     }
 
-    // SQL query to fetch specific citizen's details and their requested documents
+    // SQL query to fetch specific citizen's details and their requested documents including quantity
     String specificQuery = "SELECT c.c_id, c.a_fname, c.a_lname, c.a_email, " +
-                           "d.d_id, d.d_type, d.d_price, dr.dr_date, dr.dr_status, " +
-                           "dr.dr_due, dr.dr_cash " + // Added space before FROM
+                           "d.d_id, d.d_type, d.d_price, dr.dr_quantity, dr.dr_date, " +
+                           "dr.dr_status, dr.dr_due, dr.dr_cash " + 
                            "FROM Citizen c " +
                            "JOIN DocumentRequested dr ON c.c_id = dr.c_id " +
                            "JOIN Documents d ON dr.d_id = d.d_id " +
@@ -76,11 +76,11 @@ public class RECORDS {
         findRow.setInt(1, cid);
 
         try (ResultSet result = findRow.executeQuery()) {
-            // Print the header
-            System.out.println("---------------------------------------------------------------------------------------------------------------");
-            System.out.printf("| %-15s | %-30s | %-25s | %-15s | %-10s |\n",
-                              "Customer ID", "Name", "Document Type", "Request Date", "Status");
-            System.out.println("---------------------------------------------------------------------------------------------------------------");
+            // Print the header with the "Status" column last
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("| %-15s | %-30s | %-25s | %-15s | %-10s | %-10s | %-10s |\n",
+                              "Customer ID", "Name", "Document Type", "Request Date", "Quantity", "Cash", "Status");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
 
             // Variables to hold totals
             double totalDueSum = 0;
@@ -94,34 +94,37 @@ public class RECORDS {
                 String customerName = result.getString("a_lname") + ", " + result.getString("a_fname"); // Combine first and last name
                 String documentType = result.getString("d_type");
                 String requestDate = result.getString("dr_date");
+                double quantity = result.getDouble("dr_quantity");
                 String status = result.getString("dr_status");
                 double totalDue = result.getDouble("dr_due");
                 double cashReceived = result.getDouble("dr_cash");
 
-                // Accumulate totals
-                totalDueSum += totalDue;
-                cashReceivedSum += cashReceived;
+                // Display the record with the status column last
+                System.out.printf("| %-15d | %-30s | %-25s | %-15s | %-10.2f | %-10.2f | %-10s |\n",
+                                  customerID, customerName, documentType, requestDate, quantity, cashReceived, status);
 
-                System.out.printf("| %-15d | %-30s | %-25s | %-15s | %-10s |\n",
-                                  customerID, customerName, documentType, requestDate, status);
+                // Only add to totals if status is not "Denied"
+                if (!status.equalsIgnoreCase("Denied")) {
+                    totalDueSum += totalDue;
+                    cashReceivedSum += cashReceived;
+                }
             }
 
             if (!hasRecords) {
                 System.out.println("| No records found for the given Customer ID.");
             }
-            System.out.println("---------------------------------------------------------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
 
-            System.out.println("\n------------------");
-
-            // Print the total due, cash, and change
+            // Print the total due, cash, and change for records that are not denied
             if (hasRecords) {
                 double change = cashReceivedSum - totalDueSum; // Calculate change
-                System.out.println("Total Due: " + totalDueSum);
-                System.out.println("Cash: " + cashReceivedSum);
-                System.out.println("Change: " + change);
+                System.out.println("\n-------------------------------");
+                System.out.println("Total Due (Approved Only): " + totalDueSum);
+                System.out.println("Cash (Approved Only): " + cashReceivedSum);
+                System.out.println("Change (Approved Only): " + change);
+                System.out.println("--------------------------------");
             }
 
-            System.out.println("-------------------");
         }
     } catch (SQLException e) {
         System.out.println("Error: " + e.getMessage());

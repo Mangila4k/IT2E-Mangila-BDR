@@ -10,7 +10,7 @@ public class DOCUMENTSREQUESTED {
         Scanner sc = new Scanner(System.in);
         String response;    
         do {
-            System.out.println("\n-----------------------------------");
+            System.out.println("\n------------------------------------");
             System.out.println("Welcome to Documents Requested Panel");
             System.out.println("------------------------------------");
             System.out.println("1. Add Document Requested");
@@ -124,7 +124,15 @@ public class DOCUMENTSREQUESTED {
             if (rcash >= due) {
                 break;
             } else {
-                System.out.println("Cash received cannot be less than the total due. Try again!");
+                System.out.println("Cash received is less than the total due. Document request will be denied.");
+                String date = LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                String status = "Denied";
+
+                String orderqry = "INSERT INTO DocumentRequested (c_id, d_id, dr_quantity, dr_due, dr_cash, dr_change, dr_date, dr_status) " +
+                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                conf.addRecord(orderqry, cid, did, quantity, due, rcash, 0, date, status);
+                System.out.println("Requested document was denied due to insufficient cash.");
+                return;
             }
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid cash amount.");

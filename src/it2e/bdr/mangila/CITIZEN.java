@@ -54,8 +54,8 @@ public class CITIZEN {
 
     while (true) {
         System.out.print("Citizen First Name: ");
-        fname = sc.next();
-        if (fname.matches("[A-Za-z]+")) {
+        fname = sc.nextLine();
+        if (fname.matches("[A-Za-z ]+")) {
             break;
         } else {
             System.out.println("Invalid first name. Please enter only letters.");
