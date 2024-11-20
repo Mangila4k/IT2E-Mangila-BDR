@@ -49,9 +49,12 @@ public class RECORDS {
         } while (response.equalsIgnoreCase("Yes"));
     }
 
-    public void generateSpecificRecord() {
+   public void generateSpecificRecord() {
     Scanner sc = new Scanner(System.in);
     config conf = new config();
+
+    // Automatically generate the general report before the specific report
+    generateGeneralRecord(); // This will display the general report first
 
     System.out.print("Enter Customer ID: ");
     int cid = sc.nextInt();
@@ -76,53 +79,68 @@ public class RECORDS {
         findRow.setInt(1, cid);
 
         try (ResultSet result = findRow.executeQuery()) {
-            // Print the header with the "Status" column last
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("| %-15s | %-30s | %-25s | %-15s | %-10s | %-10s | %-10s |\n",
-                              "Customer ID", "Name", "Document Type", "Request Date", "Quantity", "Cash", "Status");
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
-
-            // Variables to hold totals
-            double totalDueSum = 0;
-            double cashReceivedSum = 0;
-            boolean hasRecords = false;
-
-            // Check if there are results and process them
-            while (result.next()) {
-                hasRecords = true;
-                int customerID = result.getInt("c_id");
+            // Fetch Citizen's Name and ID first
+            if (result.next()) {
                 String customerName = result.getString("a_lname") + ", " + result.getString("a_fname"); // Combine first and last name
-                String documentType = result.getString("d_type");
-                String requestDate = result.getString("dr_date");
-                double quantity = result.getDouble("dr_quantity");
-                String status = result.getString("dr_status");
-                double totalDue = result.getDouble("dr_due");
-                double cashReceived = result.getDouble("dr_cash");
+                int customerID = result.getInt("c_id");
 
-                // Display the record with the status column last
-                System.out.printf("| %-15d | %-30s | %-25s | %-15s | %-10.2f | %-10.2f | %-10s |\n",
-                                  customerID, customerName, documentType, requestDate, quantity, cashReceived, status);
+                // Print Citizen's ID and Name at the top
+                System.out.println("\n----------------------------------");
+                System.out.println("Customer Name: " + customerName);
+                System.out.println("Citizen ID: " + customerID);
+                System.out.println("----------------------------------\n");
 
-                // Only add to totals if status is not "Denied"
-                if (!status.equalsIgnoreCase("Denied")) {
-                    totalDueSum += totalDue;
-                    cashReceivedSum += cashReceived;
+                // Print the header for the table of document details (without Customer ID and Name)
+                System.out.println("--------------------------------------------------------------------------------------------------------");
+                System.out.printf("| %-25s | %-15s | %-15s | %-10s | %-10s | %-10s |\n",
+                                  "Document Type", "Request Date", "Quantity", "Cash", "Status", "Due");
+                System.out.println("--------------------------------------------------------------------------------------------------------");
+                                    
+                // Variables to hold totals
+                double totalDueSum = 0;
+                double cashReceivedSum = 0;
+                boolean hasRecords = false;
+
+                // Print document details
+                do {
+                    // Fetch document details
+                    String documentType = result.getString("d_type");
+                    String requestDate = result.getString("dr_date");
+                    double quantity = result.getDouble("dr_quantity");
+                    String status = result.getString("dr_status");
+                    double totalDue = result.getDouble("dr_due");
+                    double cashReceived = result.getDouble("dr_cash");
+
+                    // Display the record with the status column last
+                    System.out.printf("| %-25s | %-15s | %-15.2f | %-10.2f | %-10s | %-10.2f |\n",
+                                      documentType, requestDate, quantity, cashReceived, status, totalDue);
+
+                    // Only add to totals if status is not "Denied"
+                    if (!status.equalsIgnoreCase("Denied")) {
+                        totalDueSum += totalDue;
+                        cashReceivedSum += cashReceived;
+                    }
+                    
+                } while (result.next()); // Continue fetching the next row for other documents
+
+                // If no records found for the specific customer
+                if (!hasRecords) {
+                    System.out.println("| No more records found for the given Customer ID.");
                 }
-            }
+                System.out.println("--------------------------------------------------------------------------------------------------------");
+                                    
+                // Print the total due, cash, and change for records that are not denied
+                if (totalDueSum > 0 || cashReceivedSum > 0) {
+                    double change = cashReceivedSum - totalDueSum; // Calculate change
+                    System.out.println("\n-------------------------------");
+                    System.out.println("Total Due (Approved Only): " + totalDueSum);
+                    System.out.println("Cash (Approved Only): " + cashReceivedSum);
+                    System.out.println("Change (Approved Only): " + change);
+                    System.out.println("--------------------------------");
+                }
 
-            if (!hasRecords) {
-                System.out.println("| No records found for the given Customer ID.");
-            }
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
-
-            // Print the total due, cash, and change for records that are not denied
-            if (hasRecords) {
-                double change = cashReceivedSum - totalDueSum; // Calculate change
-                System.out.println("\n-------------------------------");
-                System.out.println("Total Due (Approved Only): " + totalDueSum);
-                System.out.println("Cash (Approved Only): " + cashReceivedSum);
-                System.out.println("Change (Approved Only): " + change);
-                System.out.println("--------------------------------");
+            } else {
+                System.out.println("No records found for the given Customer ID.");
             }
 
         }
